@@ -1,0 +1,3 @@
+{"task_id":"t-001","ts":"2026-10-20T09:00:00Z","context_tokens_would_be":26000,"injected_tokens":1800,"episodes_reused":3,"skills_used":1}
+{"task_id":"t-002","ts":"2026-10-21T09:00:00Z","context_tokens_would_be":24000,"injected_tokens":2000,"episodes_reused":2,"skills_used":1}
+{"task_id":"t-003","ts":"2026-10-22T09:00:00Z","context_tokens_would_be":21000,"injected_tokens":1700,"episodes_reused":4,"skills_used":0}

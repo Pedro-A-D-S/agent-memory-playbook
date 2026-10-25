@@ -1,0 +1,4 @@
+{"entity":"user","relation":"prefers","value":"TypeScript","status":"active"}
+{"entity":"api","relation":"located_at","value":"/v2/users","status":"active"}
+{"entity":"api","relation":"located_at","value":"/v1/users","status":"superseded"}
+{"entity":"deploy","relation":"targets","value":"production","status":"flagged"}

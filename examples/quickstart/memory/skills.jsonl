@@ -1,0 +1,2 @@
+{"name":"deploy-frontend","trigger":"deploy frontend to production","version":3,"success_rate":0.92}
+{"name":"rotate-credentials","trigger":"rotate production API credentials","version":1,"success_rate":0.75}

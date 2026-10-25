@@ -93,10 +93,11 @@ python skills/memory-savings-check/scripts/savings_check.py \
 
 ```
 skills/     7 skills (5 layers + orchestration + savings check)
+enforcement/ memory_gate.py: Claude Code hooks + a CI/pre-commit check
 templates/  MEMORY_CONFIG.yaml, system prompt, episode record
 install/    install.sh (POSIX) and install.ps1 (Windows)
 examples/   a quickstart memory store you can audit immediately
-tests/      pytest suite for the savings check
+tests/      pytest suites for the savings check and the memory gate
 docs/       distilled 5-layer architecture reference and installation guides
 ```
 
@@ -118,9 +119,22 @@ Start with Day 1. It costs one file write and one file read per session, and it 
 
 ---
 
-## No enforcement
+## Enforcement
 
-Nothing here forces an agent to use memory. There are no hooks and no mandatory gates. `--fail-under` exists for teams that want a CI gate and is off unless you pass it.
+Skills are instructions, and an agent can skip them. `enforcement/memory_gate.py` makes the workflow run anyway:
+
+| Where | Mode | Effect |
+| --- | --- | --- |
+| Claude Code `SessionStart` | `session-start` | Injects flagged or contradicting facts, recent episodes and skill triggers |
+| Claude Code `UserPromptSubmit` | `user-prompt` | Every prompt gets the pre-task checklist plus the skills, facts and episodes that match it |
+| Claude Code `Stop` | `stop` | Blocks once when the session committed code but logged no episode |
+| CI / pre-commit, any agent | `check` | Fails on invalid stores and on contradicting active facts |
+
+```bash
+./install/install.sh --enforce /path/to/project     # or: .\install\install.ps1 -Enforce C:\path\to\project
+```
+
+Opt-in: nothing is enforced until you pass `--enforce` or run `check`. Details and limits in [docs/enforcement.md](docs/enforcement.md). `--fail-under` on the savings check remains a separate, optional CI gate.
 
 ---
 

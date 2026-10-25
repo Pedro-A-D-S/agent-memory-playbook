@@ -15,13 +15,16 @@ SKILLS_SRC="$ROOT/skills"
 MODE="copy"
 DRY_RUN=0
 TARGETS=()
+ENFORCE=""
 
 usage() {
   cat <<'EOF'
-Usage: install.sh [--target NAME]... [--symlink] [--dry-run]
+Usage: install.sh [--target NAME]... [--symlink] [--enforce DIR] [--dry-run]
 
   --target NAME  hermes | claude-code | antigravity | all   (repeatable, default: all)
   --symlink      Link skills instead of copying (needs Developer Mode on Windows)
+  --enforce DIR  Also install the Claude Code memory hooks into project DIR
+                 (DIR/.claude/hooks/memory_gate.py + DIR/.claude/settings.json)
   --dry-run      Print what would happen; touch nothing
   -h, --help     Show this help
 
@@ -39,6 +42,8 @@ while [ $# -gt 0 ]; do
     --target)  [ $# -ge 2 ] || { log "error: --target needs a value"; exit 2; }
                TARGETS+=("$2"); shift 2 ;;
     --symlink) MODE="symlink"; shift ;;
+    --enforce) [ $# -ge 2 ] || { log "error: --enforce needs a project directory"; exit 2; }
+               ENFORCE="$2"; shift 2 ;;
     --dry-run) DRY_RUN=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *)         log "error: unknown argument: $1"; usage; exit 2 ;;
@@ -135,6 +140,15 @@ for tool in "${SELECTED[@]}"; do
     write_agents_md "${ANTIGRAVITY_WORKSPACE:-$PWD}"
   fi
 done
+
+if [ -n "$ENFORCE" ]; then
+  log "== enforcement -> $ENFORCE"
+  PY="$(command -v python3 || command -v python || true)"
+  [ -n "$PY" ] || { log "error: --enforce needs python3 on PATH"; exit 2; }
+  DRY_FLAG=()
+  [ "$DRY_RUN" = 1 ] && DRY_FLAG=(--dry-run)
+  "$PY" "$ROOT/enforcement/memory_gate.py" install --project "$ENFORCE" "${DRY_FLAG[@]}" | sed 's/^/   /'
+fi
 
 log ""
 if [ "$DRY_RUN" = 1 ]; then

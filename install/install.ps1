@@ -13,12 +13,17 @@
 .PARAMETER Target
   hermes | claude-code | antigravity | all   (default: all)
 
+.PARAMETER Enforce
+  Also install the Claude Code memory hooks into this project directory
+  (<dir>\.claude\hooks\memory_gate.py + <dir>\.claude\settings.json).
+
 .PARAMETER DryRun
   Print what would happen; touch nothing.
 #>
 [CmdletBinding()]
 param(
     [string[]]$Target = @('all'),
+    [string]$Enforce,
     [switch]$DryRun
 )
 
@@ -118,6 +123,16 @@ Write-Host ''
 foreach ($tool in $selected) {
     Install-Skills $tool (Get-SkillsDir $tool)
     if ($tool -eq 'antigravity') { Write-AgentsMd $PWD }
+}
+
+if ($Enforce) {
+    Write-Host "== enforcement -> $Enforce"
+    $py = Get-Command python, python3 -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $py) { throw '-Enforce needs python on PATH' }
+    $gateArgs = @((Join-Path $Root 'enforcement\memory_gate.py'), 'install', '--project', $Enforce)
+    if ($DryRun) { $gateArgs += '--dry-run' }
+    & $py.Source @gateArgs | ForEach-Object { Write-Host "   $_" }
+    if ($LASTEXITCODE -ne 0) { throw "memory_gate install failed ($LASTEXITCODE)" }
 }
 
 Write-Host ''

@@ -53,11 +53,18 @@ skill to `<skill>.bak-<timestamp>` before replacing it.
 | `memory-orchestration` | Wires the five layers and follows the 7-day build path |
 | `memory-savings-check` | Reports how many tokens memory actually saved |
 
-## No enforcement
+## Enforcement (opt-in)
 
-Nothing in this package forces an agent to use memory. There are no hooks and no
-mandatory gates. `--fail-under` on the savings check is available for teams that
-want a CI gate, and is off unless you pass it.
+Add `--enforce <project>` (`-Enforce <project>` in PowerShell) to also install
+the Claude Code hooks that make an agent load memory before each prompt and log
+an episode before it stops:
+
+```bash
+./install/install.sh --enforce ~/code/my-project
+```
+
+For Hermes Agent and Antigravity, gate commits or CI with
+`python enforcement/memory_gate.py check`. See [enforcement.md](enforcement.md).
 
 ## Verify the install
 

@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Local memory runtime data (never publish a user's memory)
+/memory/
+!examples/quickstart/memory/
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini

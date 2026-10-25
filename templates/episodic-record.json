@@ -1,0 +1,10 @@
+{
+  "task_id": "t-000",
+  "ts": "2026-01-01T00:00:00Z",
+  "task_description": "short, searchable description of the task",
+  "approach": "what was actually attempted",
+  "outcome": "success",
+  "errors_encountered": [],
+  "key_decisions": [],
+  "pinned": false
+}

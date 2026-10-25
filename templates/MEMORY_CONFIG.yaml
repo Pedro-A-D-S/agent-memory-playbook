@@ -1,0 +1,22 @@
+# Memory system configuration for the 5-layer architecture.
+# Copy to ./memory/MEMORY_CONFIG.yaml and edit.
+episodic:
+  store: ./memory/episodes.jsonl
+  max_entries: 1000
+  ttl_days: 90
+  retrieve_top_k: 5
+  pin_tag: "!pin"
+semantic:
+  store: ./memory/facts.jsonl
+  ontology: ./memory/schema.yaml
+  conflict_policy: keep_newer        # keep_newer | merge | flag
+  audit_stale_days: 90
+procedural:
+  store: ./memory/skills.yaml
+  promotion_threshold: 3
+  version_history: 5
+forgetting:
+  schedule: daily
+  expire_episodes_days: 30
+  supersede_on_conflict: true
+  flag_contradictions: true
